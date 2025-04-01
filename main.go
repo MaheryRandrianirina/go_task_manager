@@ -35,6 +35,7 @@ func readCommand() {
 	command_params_type := map[string]string{
 		"CREATE":   "-n",
 		"CATEGORY": "-c",
+		"DESCRIPTION": "-d",
 	}
 
 	first_param := cli_args[2]
@@ -60,6 +61,12 @@ func handleTaskCreation(cli_args *[]string, command_params_type *map[string]stri
 		return
 	}
 
+	if len(cli_args_pointer) > 6 && cli_args_pointer[6] != command_params_type_pointer["DESCRIPTION"] {
+		displayOccuredError("'-d' expected. " + cli_args_pointer[6] + " received")
+
+		return
+	}
+
 	err := isEntryValid(cli_args_pointer)
 	if err != nil {
 		fmt.Printf("an error occured : %v", err)
@@ -74,8 +81,8 @@ func isEntryValid(args []string) error {
 	_, parse_err5 := strconv.Atoi(args[5])
 	
 	errorMsgs := map[string]string{
-		"EMPTY": "excepted task name. %d value length received",
-		"STRING_EXPECTED": "excepted string value of name. %s received",
+		"EMPTY": "excepted task %s. %d value length received",
+        "STRING_EXPECTED": "excepted string value of %s. %s received",
 	}
 
 	if len(args[3]) == 0 {
@@ -87,6 +94,17 @@ func isEntryValid(args []string) error {
 	} else if parse_err5 == nil {
 		err = fmt.Errorf(errorMsgs["STRING_EXPECTED"], args[5])
 	}
+
+	if len(args) > 6 {
+		if len(args) == 7 || len(args[7]) == 0{
+				err = fmt.Errorf(errorMsgs["EMPTY"], "description", 0)
+		}else if len(args[7]) == 0 {
+				err = fmt.Errorf(errorMsgs["EMPTY"], "description", len(args[7]))
+		} else if _, parse_err8 := strconv.Atoi(args[7]); parse_err8 == nil {
+				err = fmt.Errorf(errorMsgs["STRING_EXPECTED"], "description", args[7])
+		}
+	}
+
 
 	return err
 }
