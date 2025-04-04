@@ -1,12 +1,14 @@
 package utils
 
-import "strings"
+import (
+	"strings"
+)
 
 /*
  * transform string to natif array value knowing that array provided via command line is read as string
  * @param value string
  * @return []string
-*/
+ */
 func FormatTonatifArray(value string) []string {
 	if len(value) < 3 {
 		return []string{}
@@ -38,3 +40,23 @@ func IsSimpleString(value string) bool {
 
 	return value[0] != '[' && value[len(value)-1] != ']'
 }
+
+func FormatToTaskSlice(names *[]string, categories *[]string, descriptions *[]string, tasks_pointer *[]Task) []Task {
+	
+	for index, name := range *names {
+		task := Task{
+			Name:        name,
+			Category:    (*categories)[index],
+			Description: "",
+		}
+
+		if len(*descriptions) > 0 {
+			task.Description = (*descriptions)[index]
+		}
+		
+		*tasks_pointer = append(*tasks_pointer, task)
+	}
+	
+	return *tasks_pointer
+}
+	

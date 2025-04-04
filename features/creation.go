@@ -1,8 +1,11 @@
 package features
 
 import (
+	"encoding/json"
 	"fmt"
 	"go_task_manager/utils"
+	"io"
+	"os"
 	"strconv"
 )
 
@@ -24,16 +27,22 @@ func CreateTasks(cli_args *[]string, command_params_type *map[string]string) {
 
 	data, err := getFormatedData(cli_args_pointer)
 	if err != nil {
-		panic(fmt.Sprintf("an error occured : %v", err))
+		panic(fmt.Sprintf("%v", err))
 	}
 	
-	fmt.Printf("data received : %v", data)
+	data_pointer := &data
+	err = insertData(data_pointer)
+	if err != nil {
+		panic(fmt.Sprintf("%v", err))
+	}
+
+	fmt.Println("Data inserted successfully")
 }
 
 /*
  * get the data provided by the user in map format
 */
-func getFormatedData(args []string) (map[string]([]string), error) {
+func getFormatedData(args []string) ([]utils.Task, error) {
 	var err error
 
 	_, parse_err3 := strconv.Atoi(args[3])
@@ -74,20 +83,20 @@ func getFormatedData(args []string) (map[string]([]string), error) {
 		return nil, err
 	}
 
-	var data map[string]([]string)
-
+	data := make([]utils.Task, 0)
+	data_pointer := &data
 	if utils.IsSimpleString(task_name) {
-		data = map[string]([]string){
-			"task_names": {task_name},
-			"task_categories": {task_category},
-			"task_descriptions": {task_description},
-		}
+		data = append(*data_pointer, utils.Task{
+			Name:        task_name,
+			Category:    task_category,
+			Description: task_description,
+		})
 
 		return data, err
 	}
 
-	data, err = getArrayProvidedEntries(task_name, task_category, task_description)
-
+	data, err = getArrayProvidedEntries(task_name, task_category, task_description, data_pointer)
+	
 	return data, err
 }
 
@@ -96,9 +105,8 @@ func getFormatedData(args []string) (map[string]([]string), error) {
  * display error if bracket is not closed, eg [1,2,3 or 1,2,3]
  * then returns data provided as array
  */
- func getArrayProvidedEntries(task_name string, task_category string, task_description string) (map[string]([]string), error) {
+func getArrayProvidedEntries(task_name string, task_category string, task_description string, data_pointer *[]utils.Task) ([]utils.Task, error) {
 	var err error
-	var data map[string]([]string)
 
 	if !utils.IsValidArray(task_name) {
 		err = fmt.Errorf("task_name is not valid array. %s received", task_name)
@@ -114,18 +122,70 @@ func getFormatedData(args []string) (map[string]([]string), error) {
 
 	task_names := utils.FormatTonatifArray(task_name)
 	task_categories := utils.FormatTonatifArray(task_category)
+	task_descriptions := utils.FormatTonatifArray(task_description)
 
 	if len(task_names) != len(task_categories) {
 		err = fmt.Errorf("names and categories should have the same length. %d and %d received", len(task_names), len(task_categories))
 
-		return data, err
+		return nil, err
 	}
-
-	data = map[string]([]string){
-		"task_names": task_names,
-		"task_categories": task_categories,
-		"task_descriptions": utils.FormatTonatifArray(task_description),
-	}
+	
+	data := utils.FormatToTaskSlice(&task_names, &task_categories, &task_descriptions, data_pointer)
 
 	return data, err
+}
+
+func insertData(data *[]utils.Task) error{
+	const FILENAME string = "tasks.json"
+	// check if the file exists
+	// if not, create it and write the data to it
+	if _, err := os.Stat(FILENAME); os.IsNotExist(err) {
+		return createFile(FILENAME, data)
+	}
+
+	file, err := os.Open(FILENAME)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	fileByteValue, err := io.ReadAll(file)
+	if err != nil {
+		return err
+	}
+	
+	var tasks []utils.Task
+
+	err = json.Unmarshal(fileByteValue, &tasks)
+	if err != nil {
+		return err
+	}
+	// append the new data to the existing data
+	tasks = append(tasks, *data...)
+
+	file.Close()
+
+	return createFile(FILENAME, &tasks)
+}
+
+/*
+ * create the json file that will contain the data
+ */
+func createFile(filename string, data *[]utils.Task) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	// write the data to the file
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(*data)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
