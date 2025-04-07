@@ -136,14 +136,13 @@ func getArrayProvidedEntries(task_name string, task_category string, task_descri
 }
 
 func insertData(data *[]utils.Task) error{
-	const FILENAME string = "tasks.json"
 	// check if the file exists
 	// if not, create it and write the data to it
-	if _, err := os.Stat(FILENAME); os.IsNotExist(err) {
-		return createFile(FILENAME, data)
+	if _, err := os.Stat(utils.FILENAME); os.IsNotExist(err) {
+		return createFile(utils.FILENAME, data)
 	}
 
-	file, err := os.Open(FILENAME)
+	file, err := os.Open(utils.FILENAME)
 	if err != nil {
 		return err
 	}
@@ -166,7 +165,7 @@ func insertData(data *[]utils.Task) error{
 
 	file.Close()
 
-	return createFile(FILENAME, &tasks)
+	return createFile(utils.FILENAME, &tasks)
 }
 
 /*

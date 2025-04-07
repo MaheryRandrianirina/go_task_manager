@@ -17,13 +17,19 @@ func main() {
 		"CREATE":   "-n",
 		"CATEGORY": "-c",
 		"DESCRIPTION": "-d",
+		"LIST": "-l",
+		"DELETE": "-r",
+		"UPDATE": "-u",
 	}
 
 	first_param := cli_args_pointer[2]
 	switch first_param {
 	case command_params_type["CREATE"]:
 		features.CreateTasks(cli_args, &command_params_type)
+	case command_params_type["LIST"]:
+		features.ListTasks(cli_args, &command_params_type)
 	}
+	
 }
 
 
