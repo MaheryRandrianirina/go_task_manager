@@ -1,37 +1,22 @@
 package features
 
 import (
-	"encoding/json"
 	"fmt"
 	"go_task_manager/utils"
-	"io"
 	"os"
 	"strconv"
 	"strings"
 )
 
-func ListTasks(cli_args *[]string, command_params_type *map[string]string) {
+func ListTasks(cli_args *[]string) {
 	if _, err := os.Stat(utils.FILENAME); os.IsNotExist(err) {
 		fmt.Println("You don't have any tasks yet")
 		return 
 	}
 
-	file, err := os.Open(utils.FILENAME)
+	tasks, err := utils.GetTasks()
 	if err != nil {
-		panic(fmt.Sprintf("Error opening file containing tasks: %v", err))
-	}
-
-	defer file.Close()
-
-	fileByteValue, err := io.ReadAll(file)
-	if err != nil {
-		panic(fmt.Sprintf("Error reading file containing tasks: %v", err))
-	}
-
-	var tasks []utils.Task
-	err = json.Unmarshal(fileByteValue, &tasks)
-	if err != nil {
-		panic(fmt.Sprintf("Error unmarshalling file containing tasks. File might not be json type: %v", err))
+		panic(fmt.Sprintf("Error fetching your tasks list: %v", err))
 	}
 
 	if len(tasks) == 0 {
@@ -94,7 +79,7 @@ func getArrayTable(tasks []utils.Task, cli_args *[]string) (string, error) {
 		}
 	}
 
-	tableSb.WriteString(fmt.Sprintf("Total: %d tasks.", len(tasks)) + "\n")
+	tableSb.WriteString(fmt.Sprintf("Total: %d task(s).", len(tasks)) + "\n")
 
 	return tableSb.String(), nil
 }

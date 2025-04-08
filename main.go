@@ -27,7 +27,9 @@ func main() {
 	case command_params_type["CREATE"]:
 		features.CreateTasks(cli_args, &command_params_type)
 	case command_params_type["LIST"]:
-		features.ListTasks(cli_args, &command_params_type)
+		features.ListTasks(cli_args)
+	case command_params_type["DELETE"]:
+		features.Delete(cli_args)
 	}
 	
 }

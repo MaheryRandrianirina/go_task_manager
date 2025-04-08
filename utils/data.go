@@ -59,4 +59,5 @@ func FormatToTaskSlice(names *[]string, categories *[]string, descriptions *[]st
 	
 	return *tasks_pointer
 }
+
 	

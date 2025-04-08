@@ -30,13 +30,12 @@ func CreateTasks(cli_args *[]string, command_params_type *map[string]string) {
 		panic(fmt.Sprintf("%v", err))
 	}
 	
-	data_pointer := &data
-	err = insertData(data_pointer)
+	err = insertData(&data)
 	if err != nil {
 		panic(fmt.Sprintf("%v", err))
 	}
 
-	fmt.Println("Data inserted successfully")
+	fmt.Println("Task(s) inserted successfully")
 }
 
 /*
@@ -139,7 +138,7 @@ func insertData(data *[]utils.Task) error{
 	// check if the file exists
 	// if not, create it and write the data to it
 	if _, err := os.Stat(utils.FILENAME); os.IsNotExist(err) {
-		return createFile(utils.FILENAME, data)
+		return utils.CreateFile(utils.FILENAME, data)
 	}
 
 	file, err := os.Open(utils.FILENAME)
@@ -165,26 +164,6 @@ func insertData(data *[]utils.Task) error{
 
 	file.Close()
 
-	return createFile(utils.FILENAME, &tasks)
+	return utils.CreateFile(utils.FILENAME, &tasks)
 }
 
-/*
- * create the json file that will contain the data
- */
-func createFile(filename string, data *[]utils.Task) error {
-	file, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-
-	defer file.Close()
-
-	// write the data to the file
-	encoder := json.NewEncoder(file)
-	err = encoder.Encode(*data)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
