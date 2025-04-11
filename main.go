@@ -30,6 +30,8 @@ func main() {
 		features.ListTasks(cli_args)
 	case command_params_type["DELETE"]:
 		features.Delete(cli_args)
+	case command_params_type["UPDATE"]:
+		features.Update(cli_args)
 	}
 	
 }
