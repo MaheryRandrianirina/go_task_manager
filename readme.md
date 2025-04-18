@@ -48,4 +48,4 @@ Contributions are welcome! Please fork the repository and submit a pull request.
 - [ ] List all tasks or filter by status (completed/pending)
 ## Contact
 
-For questions or suggestions, please contact [maheryrandrianirina@gmail.com].
+For questions or suggestions, please contact [maheryrandrianirinadev@gmail.com].
