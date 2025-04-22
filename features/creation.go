@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"time"
 )
 
 func CreateTasks(cli_args *[]string, command_params_type *map[string]string) {
@@ -25,11 +26,15 @@ func CreateTasks(cli_args *[]string, command_params_type *map[string]string) {
 		panic(fmt.Errorf("'-d' expected. %s received", cli_args_pointer[6]))
 	}
 
+	if len(cli_args_pointer) > 8 && cli_args_pointer[8] != command_params_type_pointer["DATE"] {
+		panic(fmt.Errorf("'-dd' expected. %s received", cli_args_pointer[6]))
+	}
+
 	data, err := getFormatedData(cli_args_pointer)
 	if err != nil {
 		panic(fmt.Sprintf("%v", err))
 	}
-	
+
 	err = insertData(&data)
 	if err != nil {
 		panic(fmt.Sprintf("%v", err))
@@ -40,21 +45,22 @@ func CreateTasks(cli_args *[]string, command_params_type *map[string]string) {
 
 /*
  * get the data provided by the user in map format
-*/
+ */
 func getFormatedData(args []string) ([]utils.Task, error) {
 	var err error
 
 	_, parse_err3 := strconv.Atoi(args[3])
 	_, parse_err5 := strconv.Atoi(args[5])
-	
+
 	errorMsgs := map[string]string{
-		"EMPTY": "excepted task %s. %d value length received",
-        "STRING_EXPECTED": "excepted string value of %s. %s received",
+		"EMPTY":           "excepted task %s. %d value length received",
+		"STRING_EXPECTED": "excepted string value of %s. %s received",
 	}
 
 	task_name := args[3]
 	task_category := args[5]
 	var task_description string
+	var task_due_date string
 
 	if len(task_name) == 0 {
 		err = fmt.Errorf(errorMsgs["EMPTY"], len(task_name))
@@ -68,13 +74,30 @@ func getFormatedData(args []string) ([]utils.Task, error) {
 
 	// check if the description is provided and valid
 	if len(args) > 6 {
-		if len(args) == 7 || len(args[7]) == 0 {
+
+		if len(args) == 7 {
 			err = fmt.Errorf(errorMsgs["EMPTY"], "description", 0)
 		} else if _, parse_err8 := strconv.Atoi(args[7]); parse_err8 == nil {
 			err = fmt.Errorf(errorMsgs["STRING_EXPECTED"], "description", args[7])
-		}else {
-			task_description = args[7]
+		}else if len(args) == 9 || len(args[9]) == 0 {
+			err = fmt.Errorf(errorMsgs["EMPTY"], "due date", 0)
+		}else if len(args) == 10 {
+			var due_date time.Time
+			due_date, err = time.Parse("2006-01-02", args[9])
+				
+			duration := time.Until(due_date)
+			days := int(duration.Hours()/24)
+	
+			if err != nil {
+				err = fmt.Errorf("due date value should be a valid date. %s received", args[9])
+			} else if days < 0 {
+				err = fmt.Errorf("due date should be a future date")
+			}
+	
+			task_due_date = args[9]
 		}
+
+		task_description = args[7]		
 	}
 
 	// return error if any
@@ -89,13 +112,14 @@ func getFormatedData(args []string) ([]utils.Task, error) {
 			Name:        task_name,
 			Category:    task_category,
 			Description: task_description,
+			Date:        task_due_date,
 		})
 
 		return data, err
 	}
 
 	data, err = getArrayProvidedEntries(task_name, task_category, task_description, data_pointer)
-	
+
 	return data, err
 }
 
@@ -114,7 +138,7 @@ func getArrayProvidedEntries(task_name string, task_category string, task_descri
 	if !utils.IsValidArray(task_category) {
 		err = fmt.Errorf("task_category is not valid array. %s received", task_category)
 	}
-	
+
 	if err == nil && len(task_description) > 0 && !utils.IsValidArray(task_description) {
 		err = fmt.Errorf("task_description is not valid array. %s received", task_description)
 	}
@@ -128,13 +152,13 @@ func getArrayProvidedEntries(task_name string, task_category string, task_descri
 
 		return nil, err
 	}
-	
+
 	data := utils.FormatToTaskSlice(&task_names, &task_categories, &task_descriptions, data_pointer)
 
 	return data, err
 }
 
-func insertData(data *[]utils.Task) error{
+func insertData(data *[]utils.Task) error {
 	// check if the file exists
 	// if not, create it and write the data to it
 	if _, err := os.Stat(utils.FILENAME); os.IsNotExist(err) {
@@ -152,7 +176,7 @@ func insertData(data *[]utils.Task) error{
 	if err != nil {
 		return err
 	}
-	
+
 	var tasks []utils.Task
 
 	err = json.Unmarshal(fileByteValue, &tasks)
@@ -166,4 +190,3 @@ func insertData(data *[]utils.Task) error{
 
 	return utils.CreateFile(utils.FILENAME, &tasks)
 }
-

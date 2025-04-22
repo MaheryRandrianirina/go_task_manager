@@ -20,6 +20,7 @@ func main() {
 		"LIST": "-l",
 		"DELETE": "-r",
 		"UPDATE": "-u",
+		"DATE": "-dd",
 	}
 
 	first_param := cli_args_pointer[2]
