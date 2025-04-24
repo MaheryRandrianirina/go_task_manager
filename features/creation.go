@@ -113,6 +113,7 @@ func getFormatedData(args []string) ([]utils.Task, error) {
 			Category:    task_category,
 			Description: task_description,
 			Date:        task_due_date,
+			Status: "todo",
 		})
 
 		return data, err

@@ -43,9 +43,9 @@ Run the application:
 Contributions are welcome! Please fork the repository and submit a pull request.
 
 ## TO DO
-- [ ] Add due date to task
+- [x] Add due date to task
 - [ ] Mark tasks as completed.
-- [ ] List all tasks or filter by status (completed/pending)
+- [ ] List all tasks or filter by status (completed/pending/to do).
 ## Contact
 
 For questions or suggestions, please contact [maheryrandrianirina@gmail.com].

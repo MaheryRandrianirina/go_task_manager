@@ -32,7 +32,7 @@ func IsValidArray(value string) bool {
 
 /*
  * check if the string is simple string or not an array
-*/
+ */
 func IsSimpleString(value string) bool {
 	if len(value) < 2 {
 		return true
@@ -42,7 +42,7 @@ func IsSimpleString(value string) bool {
 }
 
 func FormatToTaskSlice(names *[]string, categories *[]string, descriptions *[]string, tasks_pointer *[]Task) []Task {
-	
+
 	for index, name := range *names {
 		task := Task{
 			Name:        name,
@@ -53,11 +53,25 @@ func FormatToTaskSlice(names *[]string, categories *[]string, descriptions *[]st
 		if len(*descriptions) > 0 {
 			task.Description = (*descriptions)[index]
 		}
-		
+
 		*tasks_pointer = append(*tasks_pointer, task)
 	}
-	
+
 	return *tasks_pointer
 }
 
+func WrapTextOver(text string, length int, column_nb int, recursive bool) string {
 	
+	if len(text) <= length {
+		if recursive {
+			return strings.Repeat(" ", length-len(text)-1) + text
+		}
+		
+		return text
+	}
+
+	repeat_count := column_nb*15+1*column_nb+1
+	
+
+	return text[:length-2] + "-\n" + strings.Repeat(" ", repeat_count) + WrapTextOver(text[length-2:], length, column_nb, true)
+}

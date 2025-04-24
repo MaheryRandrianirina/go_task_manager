@@ -1,56 +1,72 @@
 [
     {
         "name": "taskone",
-        "category": "descriptionnouveau4",
+        "category": "descriptionnouveaukfgfgfhgfkjkjk4",
         "description": "realdesc4",
-        "date": ""
+        "date": "",
+        "status": ""
     },
     {
         "name": "taskbabe",
         "category": "taskcategory",
         "description": "",
-        "date": ""
+        "date": "",
+        "status": ""
     },
     {
         "name": "taskbabe",
         "category": "taskcategory",
         "description": "",
-        "date": ""
+        "date": "",
+        "status": ""
     },
     {
         "name": "taskbabe",
         "category": "taskcategory",
         "description": "",
-        "date": "2025-02-06"
+        "date": "2025-02-06",
+        "status": ""
     },
     {
         "name": "taskbabe",
         "category": "taskcategory",
         "description": "",
-        "date": "2025-02-06"
+        "date": "2025-02-06",
+        "status": ""
     },
     {
         "name": "taskbabe",
         "category": "taskcategory",
         "description": "",
-        "date": "2025-05-06"
+        "date": "2025-05-06",
+        "status": ""
     },
     {
         "name": "taskbabe",
         "category": "taskcategory",
         "description": "",
-        "date": "2025-06-06"
+        "date": "2025-06-06",
+        "status": ""
     },
     {
         "name": "taskbabe",
         "category": "taskcategory",
         "description": "",
-        "date": ""
+        "date": "",
+        "status": ""
     },
     {
         "name": "taskbabe",
         "category": "taskcategory",
         "description": "",
-        "date": "2025-06-06"
+        "date": "2025-06-06",
+        "status": ""
+    },
+    {
+        "name": "taskbabe",
+        "category": "taskcategory",
+        "description": "",
+        "date": "2025-06-06",
+        "status": "todo"
     }
 ]
