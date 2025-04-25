@@ -49,6 +49,7 @@ Contributions are welcome! Please fork the repository and submit a pull request.
 - [x] Add due date to task
 - [x] Modify task status (todo, pending, completed).
 - [x] List all tasks or filter by status (completed/pending/to do).
+- [ ] Update due date
 - [ ] Create shortcut commands for common usages (Update status, etc...).
 ## Contact
 
