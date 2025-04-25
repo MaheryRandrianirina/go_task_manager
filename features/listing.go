@@ -44,7 +44,7 @@ func getArrayTable(tasks []utils.Task, cli_args *[]string) (string, error) {
 		return "", fmt.Errorf("arg '-n' requires a number to work. For exampe : -n 2")
 	}
 
-	tableSb.WriteString(fmt.Sprintf("%-15s %-15s %-15s %-15s %-15s %-15s\n%s\n", "ID", "|Name", "| Category", "| Description", "| Due date", "| Status", strings.Repeat("-", 100)))
+	tableSb.WriteString(fmt.Sprintf("%-15s %-15s %-15s %-15s %-15s %-15s\n%s\n", "ID", "|Name", "|Category", "|Description", "|Due date", "|Status", strings.Repeat("-", 100)))
 
 	for i, task := range tasks {
 		id := i + 1

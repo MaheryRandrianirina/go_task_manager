@@ -75,3 +75,15 @@ func WrapTextOver(text string, length int, column_nb int, recursive bool) string
 
 	return text[:length-2] + "-\n" + strings.Repeat(" ", repeat_count) + WrapTextOver(text[length-2:], length, column_nb, true)
 }
+
+func IsStatus(value string) bool {
+	status := [3]string{"todo", "pending", "completed"}
+	
+	for _, v := range status {
+		if value == v {
+			return true
+		}		
+	}
+
+	return false
+}
